@@ -187,9 +187,15 @@ function showMessage(msg, duration = 2000) {
 }
 
 let isChecking = false;
+let lastKeyPressTime = 0;
 
 function handleKeyPress(key) {
     if (gameOver || isChecking) return;
+
+    // Debounce to prevent double-firing from fast touch events and click fallbacks
+    const now = Date.now();
+    if (now - lastKeyPressTime < 50) return;
+    lastKeyPressTime = now;
 
     if (key === "ENTER") {
         submitGuess();
@@ -497,9 +503,20 @@ document.addEventListener("keydown", (e) => {
     }
 });
 
+// Use pointerdown instead of click for instant mobile response and to prevent double-tap issues
+keyboard.addEventListener("pointerdown", (e) => {
+    const target = e.target.closest('button');
+    if (target && target.dataset.key) {
+        e.preventDefault(); // Prevents simulated click events and double-tap zoom
+        handleKeyPress(target.dataset.key);
+    }
+});
+
+// Fallback click listener for older browsers, but stopPropagation/preventDefault in pointerdown usually handles it
 keyboard.addEventListener("click", (e) => {
     const target = e.target.closest('button');
     if (target && target.dataset.key) {
+        // If pointerdown fired, this might be skipped, but if a browser only supports click, it catches it here
         handleKeyPress(target.dataset.key);
     }
 });
