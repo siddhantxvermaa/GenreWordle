@@ -1,4 +1,5 @@
 @echo off
+cd /d "%~dp0"
 echo Uploading changes to GitHub...
 git add .
 git commit -m "Auto-update game files"
