@@ -384,6 +384,8 @@ main {
     border-radius: 4px;
     cursor: pointer;
     user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
     background-color: var(--key-bg);
     color: var(--key-text);
     flex: 1;

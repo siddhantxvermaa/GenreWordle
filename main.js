@@ -503,22 +503,22 @@ document.addEventListener("keydown", (e) => {
     }
 });
 
-// Use pointerdown instead of click for instant mobile response and to prevent double-tap issues
-keyboard.addEventListener("pointerdown", (e) => {
+// Use touchstart and mousedown for universal compatibility across all mobile devices
+function handleVirtualKey(e) {
     const target = e.target.closest('button');
     if (target && target.dataset.key) {
-        e.preventDefault(); // Prevents simulated click events and double-tap zoom
+        if (e.type === 'touchstart') {
+            e.preventDefault(); // Prevents the emulated mousedown/click events from firing
+        }
         handleKeyPress(target.dataset.key);
     }
-});
+}
 
-// Fallback click listener for older browsers, but stopPropagation/preventDefault in pointerdown usually handles it
-keyboard.addEventListener("click", (e) => {
-    const target = e.target.closest('button');
-    if (target && target.dataset.key) {
-        // If pointerdown fired, this might be skipped, but if a browser only supports click, it catches it here
-        handleKeyPress(target.dataset.key);
-    }
+keyboard.addEventListener("touchstart", handleVirtualKey, { passive: false });
+keyboard.addEventListener("mousedown", (e) => {
+    // Only handle mousedown if it's not a touch device simulating a mouse
+    if (e.sourceCapabilities && e.sourceCapabilities.firesTouchEvents) return;
+    handleVirtualKey(e);
 });
 
 playAgainBtn.addEventListener("click", () => {

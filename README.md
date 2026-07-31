@@ -1,6 +1,6 @@
 # Genre Wordle
 
-🎮 **[Click here to play the game live!](https://YOUR-USERNAME.github.io/genre-wordle)**
+🎮 **[Click here to play the game live!](https://siddhantxvermaa.github.io/GenreWordle/)**
 
 A custom, highly-polished spin on the classic Wordle game! Built entirely with HTML, CSS, and vanilla JavaScript. 
 
