@@ -27,8 +27,9 @@
     <div id="game-ui" class="hidden">
         <header>
             <div class="header-title-row">
-                <h1>Wordle</h1>
-            </div>
+            <h1>WORDLE</h1>
+            <button id="report-btn" class="icon-btn" title="Report a Glitch">🐛 Report Glitch</button>
+        </div>
             <div id="header-stats">
                 <span id="player-name-display">Player</span>: <span id="player-score-display">0</span> pts
             </div>
@@ -102,6 +103,22 @@
             <button id="close-leaderboard-btn">Close</button>
         </div>
     </div>
+
+    <!-- Modal for Bug Report -->
+    <div id="report-modal" class="hidden modal-overlay">
+        <div class="modal-content report-content">
+            <h2>Report a Glitch</h2>
+            <p style="font-size: 0.9rem; margin-bottom: 1rem; color: #a0a0a5;">Found a bug? Describe it below and it will be sent directly to the developer.</p>
+            <textarea id="bug-description" rows="4" placeholder="E.g., The game froze when I typed a word..."></textarea>
+            <div style="display: flex; gap: 10px; margin-top: 1rem;">
+                <button id="submit-report-btn">Send Report</button>
+                <button id="close-report-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Version Number -->
+    <div id="version-number">v1.1</div>
 
     <script src="main.js"></script>
 </body>

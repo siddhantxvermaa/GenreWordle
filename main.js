@@ -392,7 +392,68 @@ function addScoreToUser(name, points) {
     if (!name) name = "Guest";
     const scores = loadScores();
     scores[name] = (scores[name] || 0) + points;
-    saveScores(scores);
+    localStorage.setItem("wordleLeaderboard", JSON.stringify(scores));
+}
+
+// --- Bug Reporting Logic ---
+const reportBtn = document.getElementById("report-btn");
+const reportModal = document.getElementById("report-modal");
+const closeReportBtn = document.getElementById("close-report-btn");
+const submitReportBtn = document.getElementById("submit-report-btn");
+const bugDescription = document.getElementById("bug-description");
+
+if (reportBtn) {
+    reportBtn.addEventListener("click", () => {
+        reportModal.classList.remove("hidden");
+    });
+}
+
+if (closeReportBtn) {
+    closeReportBtn.addEventListener("click", () => {
+        reportModal.classList.add("hidden");
+        bugDescription.value = "";
+    });
+}
+
+if (submitReportBtn) {
+    submitReportBtn.addEventListener("click", async () => {
+        const text = bugDescription.value.trim();
+        if (!text) {
+            alert("Please describe the bug first!");
+            return;
+        }
+
+        submitReportBtn.textContent = "Sending...";
+        submitReportBtn.disabled = true;
+
+        try {
+            const response = await fetch("https://formsubmit.co/ajax/siddhantverma253@gmail.com", {
+                method: "POST",
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    _subject: "New Glitch Report for Genre Wordle!",
+                    message: text,
+                    game_state: `Mode: ${currentGenre}, Length: ${WORD_LENGTH}, Guess: ${currentRow}`
+                })
+            });
+
+            if (response.ok) {
+                alert("Thank you! Your bug report has been sent to the developer.");
+                reportModal.classList.add("hidden");
+                bugDescription.value = "";
+            } else {
+                alert("Failed to send report. Please try again later.");
+            }
+        } catch (e) {
+            alert("Failed to send report. Please check your internet connection.");
+        } finally {
+            submitReportBtn.textContent = "Send Report";
+            submitReportBtn.disabled = false;
+        }
+    });
 }
 
 function getScore(name) {

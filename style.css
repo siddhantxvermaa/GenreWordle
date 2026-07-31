@@ -499,3 +499,63 @@ main {
 #play-again-btn:hover {
     opacity: 0.8;
 }
+
+/* Added in v1.1 */
+#report-btn {
+    background: none;
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#report-btn:hover {
+    background-color: var(--key-bg);
+}
+
+.report-content {
+    width: 90%;
+    max-width: 400px;
+}
+
+#bug-description {
+    width: 100%;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 10px;
+    font-family: inherit;
+    resize: vertical;
+}
+
+#submit-report-btn, #close-report-btn {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#submit-report-btn {
+    background-color: var(--tile-correct);
+    color: white;
+}
+
+#close-report-btn {
+    background-color: var(--key-bg);
+    color: var(--text-color);
+}
+
+#version-number {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    font-size: 0.75rem;
+    color: var(--border-color);
+    pointer-events: none;
+}
