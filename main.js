@@ -92,6 +92,26 @@ const FLIP_ANIMATION_DURATION = 500;
 const DANCE_ANIMATION_DURATION = 500;
 
 let currentWord = "";
+let validDictionary = new Set();
+let isDictionaryLoaded = false;
+
+// Fetch full dictionary
+fetch('https://cdn.jsdelivr.net/gh/dwyl/english-words@master/words_alpha.txt')
+    .then(res => res.text())
+    .then(text => {
+        text.split(/\r?\n/).forEach(w => {
+            const word = w.trim().toUpperCase();
+            if (word.length === 5 || word.length === 6) {
+                validDictionary.add(word);
+            }
+        });
+        isDictionaryLoaded = true;
+    })
+    .catch(e => {
+        console.error("Could not load dictionary", e);
+        isDictionaryLoaded = true; 
+    });
+
 let currentGenre = "";
 let guesses = [];
 let currentGuess = "";
@@ -222,42 +242,44 @@ async function submitGuess() {
     }
 
     const guess = currentGuess;
+    const upperGuess = guess.toUpperCase();
     isChecking = true;
     
     const row = board.children[currentRow];
     row.style.opacity = '0.6'; // Immediate visual feedback
     
     let isValid = false;
-    const lowerGuess = guess.toLowerCase();
     
-    // Check internal dictionaries
+    // Check internal dictionaries first
     for (const genre in wordsByGenre) {
         for (const len in wordsByGenre[genre]) {
-            if (wordsByGenre[genre][len].map(w => w.toLowerCase()).includes(lowerGuess)) {
+            if (wordsByGenre[genre][len].map(w => w.toUpperCase()).includes(upperGuess)) {
                 isValid = true;
             }
         }
     }
     for (const len in classicWords) {
-        if (classicWords[len].map(w => w.toLowerCase()).includes(lowerGuess)) {
+        if (classicWords[len].map(w => w.toUpperCase()).includes(upperGuess)) {
             isValid = true;
         }
     }
     
-    // Check external dictionary if not found internally
+    // Check pre-loaded full dictionary
     if (!isValid) {
-        try {
-            // We removed the 400ms timeout because it was causing the game to accept
-            // gibberish if the dictionary API took longer than 400ms to respond.
-            const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${guess}`);
-            if (res.ok) {
-                isValid = true;
-            }
-        } catch(e) {
-            showMessage("Network error checking word");
+        if (!isDictionaryLoaded) {
+            showMessage("Loading dictionary, please wait a second...");
             isChecking = false;
             row.style.opacity = '1';
             return;
+        }
+        
+        if (validDictionary.has(upperGuess)) {
+            isValid = true;
+        } else {
+            // Also accept if validDictionary is somehow empty (fallback)
+            if (validDictionary.size === 0 && isDictionaryLoaded) {
+                isValid = true;
+            }
         }
     }
 
