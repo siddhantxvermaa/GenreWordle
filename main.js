@@ -247,13 +247,17 @@ async function submitGuess() {
     // Check external dictionary if not found internally
     if (!isValid) {
         try {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 400); // Max 400ms lag
-            const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${guess}`, { signal: controller.signal });
-            clearTimeout(timeoutId);
-            if (res.ok) isValid = true;
+            // We removed the 400ms timeout because it was causing the game to accept
+            // gibberish if the dictionary API took longer than 400ms to respond.
+            const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${guess}`);
+            if (res.ok) {
+                isValid = true;
+            }
         } catch(e) {
-            isValid = true; // fallback if network fails or times out
+            showMessage("Network error checking word");
+            isChecking = false;
+            row.style.opacity = '1';
+            return;
         }
     }
 
